@@ -6,7 +6,7 @@ int wall_at(int x, int y) {
     int i = x + y * testmap.width;
     if (i < 0 || i >= testmap.width * testmap.height)
         return -1;
-    return testmap.layers[1].tilelayer.data[i] - 1;
+    return testmap.layers[2].tilelayer.data[i] - 1;
 }
 
 int floor_at(int x, int y) {
@@ -14,6 +14,13 @@ int floor_at(int x, int y) {
     if (i < 0 || i >= testmap.width * testmap.height)
         return -1;
     return testmap.layers[0].tilelayer.data[i] - 1;
+}
+
+int ceiling_at(int x, int y) {
+    int i = x + y * testmap.width;
+    if (i < 0 || i >= testmap.width * testmap.height)
+        return -1;
+    return testmap.layers[1].tilelayer.data[i] - 1;
 }
 
 /*

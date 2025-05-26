@@ -135,28 +135,27 @@ void render(raycast_camera cam, entity_array* objects) {
             float yTextureOffset = fabsf(floorY - (int) floorY);
 
             int floor_texture_id = floor_at((int) floorX, (int) floorY);
-            if (floor_texture_id < 0) {
-                if (floorX >= 0 && floorY >= 0 && floorX < 32 && floorY < 32) {
-                    printf("%d at (%f, %f)\n", floor_at((int) floorX, (int) floorY), floorX, floorY);
-                }
-                //continue;
-                floor_texture_id = 0;
-            }
-            struct floor_texture_data thing = floor_data[floor_texture_id];
+            if (floor_texture_id < 0)
+                floor_texture_id = 0; // continue is buggy for some reason i dont know
+            int ceiling_texture_id = ceiling_at((int) floorX, (int) floorY);
+            if (ceiling_texture_id < 0)
+                ceiling_texture_id = 0; // continue is buggy for some reason i dont know
+            struct floor_texture_data floor_thing = floor_data[floor_texture_id];
+            struct floor_texture_data ceiling_thing = floor_data[ceiling_texture_id];
 
-            int textureXOff = (int) (xTextureOffset * thing.w);
-            int textureYOff = (int) (yTextureOffset * thing.h);
+            int floor_textureXOff = (int) (xTextureOffset * floor_thing.w);
+            int floor_textureYOff = (int) (yTextureOffset * floor_thing.h);
+            int ceiling_textureXOff = (int) (xTextureOffset * ceiling_thing.w);
+            int ceiling_textureYOff = (int) (yTextureOffset * ceiling_thing.h);
 
-            SDL_Rect src = {textureXOff, textureYOff, 1, 1};
-            SDL_Rect dst = {x, y, 1, 1};
-
-            float dist = (floorX - cam.pos.x) * (floorX - cam.pos.x) + (floorY - cam.pos.y) * (floorY - cam.pos.y);
 /*
+            float dist = (floorX - cam.pos.x) * (floorX - cam.pos.x) + (floorY - cam.pos.y) * (floorY - cam.pos.y);
             int darknessThreshold = 5 * 5;
             int darkness = darknessThreshold > 0 ? (dist * 255 / darknessThreshold) : 0;
             Uint8 dark = 255 - min(darkness, 255);  */
 
-            Uint32 pixel = thing.pixels[textureYOff * thing.w + textureXOff];
+            Uint32 floor_pixel = floor_thing.pixels[floor_textureYOff * floor_thing.w + floor_textureXOff];
+            Uint32 ceiling_pixel = ceiling_thing.pixels[ceiling_textureYOff * ceiling_thing.w + ceiling_textureXOff];
 /*
             Uint8 r, g, b;
             r = (pixel & 0xFF000000) >> (8*3);
@@ -169,8 +168,8 @@ void render(raycast_camera cam, entity_array* objects) {
 
             pixel = (r << (8*3)) + (g << (8*2)) + (b << (8*1)) + 0x000000FF; */
 
-            pixels[y * WINDOW_WIDTH + x] = pixel;
-            pixels[(WINDOW_HEIGHT - y - 1) * WINDOW_WIDTH + x] = pixel;
+            pixels[y * WINDOW_WIDTH + x] = ceiling_pixel;
+            pixels[(WINDOW_HEIGHT - y - 1) * WINDOW_WIDTH + x] = floor_pixel;
             floorX += floorStepX / 1;
             floorY += floorStepY / 1.5;
         }
