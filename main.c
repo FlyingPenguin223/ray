@@ -1,5 +1,6 @@
 #include "raycast.h"
 #include "src/include/entities.h"
+#include "src/include/render.h"
 
 void sdl_exit();
 int sdl_init();
@@ -12,10 +13,11 @@ void free_textures();
 SDL_Texture* get_wall_texture(int id);
 SDL_Texture* get_entity_texture(int id);
 
-SDL_Texture* wall_textures[1];
-const int num_wall_textures = 1;
-SDL_Texture* entity_textures[1];
+const int num_wall_textures = 2;
+SDL_Texture* wall_textures[2];
+SDL_Surface* wall_surfaces[2];
 const int num_entity_textures = 1;
+SDL_Texture* entity_textures[1];
 
 SDL_Window* g_window;
 SDL_Renderer* g_renderer;
@@ -27,6 +29,7 @@ int main() {
         return sdl_error();
 
     init_textures();
+    init_floor_texture_data();
 
     raycast_camera cam;
 
@@ -112,6 +115,10 @@ SDL_Texture* load_texture(const char* path) {
 
 void init_textures() {
     wall_textures[0] = load_texture("./textures/wall.bmp");
+    wall_textures[1] = load_texture("./textures/floor.bmp");
+
+    wall_surfaces[0] = SDL_LoadBMP("./textures/wall.bmp");
+    wall_surfaces[1] = SDL_LoadBMP("./textures/floor.bmp");
 
     entity_textures[0] = load_texture("./textures/camera.bmp");
 }
@@ -122,14 +129,15 @@ extern int* floor_pixels;
 extern int* map;
 
 void free_textures() {
-    for (int i = 0; i < num_wall_textures; i++)
+    for (int i = 0; i < num_wall_textures; i++) {
         SDL_DestroyTexture(wall_textures[i]);
+        SDL_FreeSurface(wall_surfaces[i]);
+    }
     for (int i = 0; i < num_entity_textures; i++)
         SDL_DestroyTexture(entity_textures[i]);
     if (floor_to_draw != NULL)
         SDL_DestroyTexture(floor_to_draw);
-    if (floor_pixels != NULL)
-        free(floor_pixels);
+    free_floor_texture_data();
 }
 
 SDL_Texture* get_wall_texture(int id) {

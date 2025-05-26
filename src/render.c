@@ -1,5 +1,6 @@
 #include "../raycast.h"
 #include <SDL2/SDL_surface.h>
+#include <math.h>
 
 extern SDL_Window* g_window;
 extern SDL_Renderer* g_renderer;
@@ -66,16 +67,38 @@ void draw_scaled_sprite(SDL_Texture* texture, float x, float y, float scale) {
 SDL_Texture* floor_to_draw = NULL; //not static to be able to free, maybe change if I can figure it out
 int* floor_pixels = NULL;
 
+struct floor_texture_data {
+    int* pixels;
+    int w;
+    int h;
+};
+
+static struct floor_texture_data floor_data[2];
+
+extern int num_wall_textures;
+extern SDL_Surface* wall_surfaces[];
+
+void init_floor_texture_data() {
+    for (int i = 0; i < num_wall_textures; i++) {
+        SDL_Surface* surface = wall_surfaces[i];
+        int* floor_pixels = malloc(surface->w * surface->h * sizeof(int));
+        SDL_ConvertPixels(surface->w, surface->h, surface->format->format, surface->pixels, surface->pitch, SDL_PIXELFORMAT_RGBA8888, floor_pixels, surface->pitch);
+
+        floor_data[i].pixels = floor_pixels;
+        floor_data[i].w = surface->w;
+        floor_data[i].h = surface->h;
+    }
+}
+
+void free_floor_texture_data() {
+    for (int i = 0; i < num_wall_textures; i++) {
+        free(floor_data[i].pixels);
+    }
+}
+
 void render(raycast_camera cam, entity_array* objects) {
     if (floor_to_draw == NULL)
         floor_to_draw = SDL_CreateTexture(g_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-    if (floor_pixels == NULL) {
-        SDL_Surface* floor_surface = SDL_LoadBMP("./textures/wall.bmp"); // tmp but actually this time
-        floor_pixels = malloc(floor_surface->w * floor_surface->h * sizeof(int));
-        SDL_ConvertPixels(floor_surface->w, floor_surface->h, floor_surface->format->format, floor_surface->pixels, floor_surface->pitch, SDL_PIXELFORMAT_RGBA8888, floor_pixels, floor_surface->pitch);
-        SDL_FreeSurface(floor_surface);
-    }
 
     int half_width = WINDOW_WIDTH / 2;
     int half_height = WINDOW_HEIGHT / 2;
@@ -86,11 +109,6 @@ void render(raycast_camera cam, entity_array* objects) {
     int pitch;
     if (SDL_LockTexture(floor_to_draw, NULL, (void**) &pixels, &pitch) < 0)
         sdl_error();
-
-    int floor_texture_width;
-    int floor_texture_height;
-
-    SDL_QueryTexture(get_wall_texture(0), NULL, NULL, &floor_texture_width, &floor_texture_height);
 
     for (int y = 0; y < half_height; y++) {
         float ray_dir_0 = cam.dir - cam.fov / 2;
@@ -113,23 +131,32 @@ void render(raycast_camera cam, entity_array* objects) {
         float floorY = cam.pos.y + rowDist * ray_dir_y0;
 
         for (int x = 0; x < half_width * 2; x++) {
-            float xTextureOffset = fabsf(floorX - (int) floorX);
+            float xTextureOffset = fabsf(floorX - (int) floorX); // fabsf'd once but dont matter ?
             float yTextureOffset = fabsf(floorY - (int) floorY);
 
-            int textureXOff = (int) (xTextureOffset * floor_texture_width);
-            int textureYOff = (int) (yTextureOffset * floor_texture_height);
+            int floor_texture_id = floor_at((int) floorX, (int) floorY);
+            if (floor_texture_id < 0) {
+                if (floorX >= 0 && floorY >= 0 && floorX < 32 && floorY < 32) {
+                    printf("%d at (%f, %f)\n", floor_at((int) floorX, (int) floorY), floorX, floorY);
+                }
+                //continue;
+                floor_texture_id = 0;
+            }
+            struct floor_texture_data thing = floor_data[floor_texture_id];
 
-            int index = textureXOff + textureYOff * floor_texture_width;
+            int textureXOff = (int) (xTextureOffset * thing.w);
+            int textureYOff = (int) (yTextureOffset * thing.h);
 
             SDL_Rect src = {textureXOff, textureYOff, 1, 1};
             SDL_Rect dst = {x, y, 1, 1};
 
             float dist = (floorX - cam.pos.x) * (floorX - cam.pos.x) + (floorY - cam.pos.y) * (floorY - cam.pos.y);
+/*
+            int darknessThreshold = 5 * 5;
+            int darkness = darknessThreshold > 0 ? (dist * 255 / darknessThreshold) : 0;
+            Uint8 dark = 255 - min(darkness, 255);  */
 
-            // int darkness = darknessThreshold > 0 ? (dist * 255 / darknessThreshold) : 0;
-            // Uint8 dark = 255 - min(darkness, 255); 
-
-            Uint32 pixel = floor_pixels[textureYOff * floor_texture_width + textureXOff];
+            Uint32 pixel = thing.pixels[textureYOff * thing.w + textureXOff];
 /*
             Uint8 r, g, b;
             r = (pixel & 0xFF000000) >> (8*3);
@@ -197,13 +224,13 @@ void render(raycast_camera cam, entity_array* objects) {
                 side = 0;
             }
 
-            if (tile_at(celx, cely) >= 0) {
+            if (wall_at(celx, cely) >= 0) {
                 rx = dist * cos(angle) + cam.pos.x;
                 ry = dist * sin(angle) + cam.pos.y;
 
                 float texture_offset = side ? (dirx > 0 ? fixmod(ry, 1) : fixmod(1-ry, 1)): (diry < 0 ? fixmod(rx, 1) : fixmod(1-rx, 1));
 
-                insertRenderElement(i + half_width, dist, angle, texture_offset, tile_at(celx, cely));
+                insertRenderElement(i + half_width, dist, angle, texture_offset, wall_at(celx, cely));
                 break;
             }
         } while (dist < 128);

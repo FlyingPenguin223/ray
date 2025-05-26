@@ -2,12 +2,20 @@
 
 extern const Tiled2cMap testmap;
 
-int tile_at(int x, int y) {
+int wall_at(int x, int y) {
     int i = x + y * testmap.width;
-    if (i < 0 || i > testmap.width * testmap.height)
+    if (i < 0 || i >= testmap.width * testmap.height)
         return -1;
-	return testmap.layers[0].tilelayer.data[i] - 1;
+    return testmap.layers[1].tilelayer.data[i] - 1;
 }
+
+int floor_at(int x, int y) {
+    int i = x + y * testmap.width;
+    if (i < 0 || i >= testmap.width * testmap.height)
+        return -1;
+    return testmap.layers[0].tilelayer.data[i] - 1;
+}
+
 /*
 void load_map(const char* path) {
     if (map != NULL)

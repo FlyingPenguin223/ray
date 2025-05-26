@@ -1,3 +1,4 @@
 #include "../../raycast.h"
 
-int tile_at(int x, int y);
+int wall_at(int x, int y);
+int floor_at(int x, int y);
