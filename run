@@ -1,0 +1,3 @@
+#!/bin/sh
+
+tup -q && ./main

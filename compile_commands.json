@@ -1,0 +1,93 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-O2",
+      "-o",
+      "build/input.o",
+      "src/input.c"
+    ],
+    "directory": "/home/rexifer/projects/ray",
+    "file": "/home/rexifer/projects/ray/src/input.c",
+    "output": "/home/rexifer/projects/ray/build/input.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-O2",
+      "-o",
+      "build/render.o",
+      "src/render.c"
+    ],
+    "directory": "/home/rexifer/projects/ray",
+    "file": "/home/rexifer/projects/ray/src/render.c",
+    "output": "/home/rexifer/projects/ray/build/render.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-O2",
+      "-o",
+      "build/raycast.o",
+      "src/raycast.c"
+    ],
+    "directory": "/home/rexifer/projects/ray",
+    "file": "/home/rexifer/projects/ray/src/raycast.c",
+    "output": "/home/rexifer/projects/ray/build/raycast.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-O2",
+      "-o",
+      "build/entities.o",
+      "src/entities.c"
+    ],
+    "directory": "/home/rexifer/projects/ray",
+    "file": "/home/rexifer/projects/ray/src/entities.c",
+    "output": "/home/rexifer/projects/ray/build/entities.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-O2",
+      "-o",
+      "build/entity.o",
+      "src/entity.c"
+    ],
+    "directory": "/home/rexifer/projects/ray",
+    "file": "/home/rexifer/projects/ray/src/entity.c",
+    "output": "/home/rexifer/projects/ray/build/entity.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-O2",
+      "-o",
+      "build/main.o",
+      "main.c"
+    ],
+    "directory": "/home/rexifer/projects/ray",
+    "file": "/home/rexifer/projects/ray/main.c",
+    "output": "/home/rexifer/projects/ray/build/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-O2",
+      "-o",
+      "build/map.o",
+      "src/map.c"
+    ],
+    "directory": "/home/rexifer/projects/ray",
+    "file": "/home/rexifer/projects/ray/src/map.c",
+    "output": "/home/rexifer/projects/ray/build/map.o"
+  }
+]
