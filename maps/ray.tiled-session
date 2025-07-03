@@ -7,18 +7,19 @@
     "expandedProjectPaths": [
         "."
     ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "testmap.tmj": {
-            "scale": 19.4417,
-            "selectedLayer": 0,
+            "scale": 40.4646,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 12.241727832442635,
-                "y": 14.864955225108913
+                "x": 24.589394186523528,
+                "y": 11.763368475161005
             }
         },
         "tileset.tsx": {
             "dynamicWrapping": true,
-            "scaleInDock": 1,
+            "scaleInDock": 0.06,
             "scaleInEditor": 1
         }
     },
@@ -29,13 +30,12 @@
     "map.tileWidth": 1,
     "map.width": 32,
     "openFiles": [
-        "tileset.tsx",
         "testmap.tmj"
     ],
     "project": "ray.tiled-project",
     "recentFiles": [
-        "tileset.tsx",
-        "testmap.tmj"
+        "testmap.tmj",
+        "tileset.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.type": 1
