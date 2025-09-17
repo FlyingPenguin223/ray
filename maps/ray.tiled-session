@@ -10,11 +10,11 @@
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "testmap.tmj": {
-            "scale": 40.4646,
-            "selectedLayer": 1,
+            "scale": 29.391,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 24.589394186523528,
-                "y": 11.763368475161005
+                "x": 13.728692456874555,
+                "y": 14.153992718859516
             }
         },
         "tileset.tsx": {

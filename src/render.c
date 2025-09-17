@@ -19,7 +19,7 @@ typedef struct render_element {
 static render_element z_buffer[WINDOW_WIDTH + 100];
 static int z_buffer_length = 0;
 
-static float darkness_threshold = 5 * 5;
+static float darkness_threshold = -1;
 
 void shiftZBuffer(int startId) {
 	for (int curId = z_buffer_length; curId > startId; curId--) {
@@ -280,8 +280,20 @@ void render(raycast_camera cam, entity_array* objects) {
 
 			SDL_SetTextureColorMod(texture, dark, dark, dark);
 
+			float z = 0;
+
+			float udv = dv - WINDOW_HEIGHT * sinf(z);
+			float bdv = dv + WINDOW_HEIGHT * sinf(z);
+
+			float udist = (udv / 2.0) / corrected_dist;
+			float bdist = (bdv / 2.0) / corrected_dist;
+
+			float screen_y = WINDOW_HEIGHT/2.0 - udist;
+			float screen_h = udist + bdist;
+
 			SDL_Rect rect = {cur.texture_offset * texture_width, 0, 1, texture_height};
-			SDL_Rect dest = {cur.type, WINDOW_HEIGHT/2.0 - (dv/2) * scaleconst / corrected_dist, 1, dv * scaleconst / corrected_dist};
+			// SDL_Rect dest = {cur.type, WINDOW_HEIGHT/2.0 - (dv/2) * scaleconst / corrected_dist, 1, dv * scaleconst / corrected_dist};
+			SDL_Rect dest = {cur.type, screen_y, 1, screen_h};
 			SDL_RenderCopy(g_renderer, texture, &rect, &dest);
 		} else { // entity
 			float dx = cur.dist * sin(cur.angle); // before correcting for fisheye
