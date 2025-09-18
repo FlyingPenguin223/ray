@@ -21,6 +21,7 @@ typedef struct vec2 {
 
 typedef struct raycast_camera {
     vec2 pos;
+	float z;
     float dir;
     float fov;
 } raycast_camera;

@@ -1,4 +1,5 @@
 #include "../raycast.h"
+#include "include/input.h"
 #include <SDL2/SDL_scancode.h>
 
 void cam_debug_movement(raycast_camera* cam) {
@@ -24,6 +25,15 @@ void cam_debug_movement(raycast_camera* cam) {
     } else if (is_key_down(SDL_SCANCODE_RIGHT)) {
         cam->dir += 0.03;
     }
+
+	if (is_key_down(SDL_SCANCODE_UP)) {
+		cam->z += 0.1;
+	} else if (is_key_down(SDL_SCANCODE_DOWN)) {
+		cam->z -= 0.1;
+	}
+
+	float max_z = 0.49;
+	cam->z = cam->z > max_z ? max_z : cam->z < -max_z ? -max_z : cam->z;
 
     cam->dir = fixmod(cam->dir, 2*M_PI);
 }

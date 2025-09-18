@@ -121,67 +121,82 @@ void render(raycast_camera cam, entity_array* objects) {
 		float ray_dir_y1 = sinf(ray_dir_1);
 
 		int p = abs(y - half_height);
-		float posZ = half_height;
+		float scaleconst = 0.75;
+		float posZfloor = (half_width / (2.0*sin(cam.fov / 2))) + (cam.z * WINDOW_HEIGHT * scaleconst);
+		float posZceil = (half_width / (2.0*sin(cam.fov / 2))) - (cam.z * WINDOW_HEIGHT * scaleconst);
 
-		//float rowDist = posZ/p;
-		float rowDist = (half_width / (2.0*sin(cam.fov / 2))) / p; // https://stackoverflow.com/questions/73453144/why-is-the-floor-in-my-raycaster-seemingly-misaligned
+		float rowDistFloor = posZfloor/p;
+		float rowDistCeil = posZceil/p;
+		// float rowDist = (half_width / (2.0*sin(cam.fov / 2))) / p; // https://stackoverflow.com/questions/73453144/why-is-the-floor-in-my-raycaster-seemingly-misaligned
 
-		float floorStepX = rowDist * (ray_dir_x1 - ray_dir_x0) / (float) WINDOW_WIDTH;
-		float floorStepY = rowDist * (ray_dir_y1 - ray_dir_y0) / (float) WINDOW_HEIGHT;
+		float floorStepX = rowDistFloor * (ray_dir_x1 - ray_dir_x0) / (float) WINDOW_WIDTH;
+		float floorStepY = rowDistFloor * (ray_dir_y1 - ray_dir_y0) / (float) WINDOW_HEIGHT;
 
-		float floorX = cam.pos.x + rowDist * ray_dir_x0;
-		float floorY = cam.pos.y + rowDist * ray_dir_y0;
+		float floorX = cam.pos.x + rowDistFloor * ray_dir_x0;
+		float floorY = cam.pos.y + rowDistFloor * ray_dir_y0;
+
+		float ceilStepX = rowDistCeil * (ray_dir_x1 - ray_dir_x0) / (float) WINDOW_WIDTH;
+		float ceilStepY = rowDistCeil * (ray_dir_y1 - ray_dir_y0) / (float) WINDOW_HEIGHT;
+
+		float ceilX = cam.pos.x + rowDistCeil * ray_dir_x0;
+		float ceilY = cam.pos.y + rowDistCeil * ray_dir_y0;
 
 		for (int x = 0; x < half_width * 2; x++) {
-			float xTextureOffset = fabsf(floorX - (int) floorX); // fabsf'd once but dont matter ?
-			float yTextureOffset = fabsf(floorY - (int) floorY);
+			float xTextureOffsetFloor = fabsf(floorX - (int) floorX); // fabsf'd once but dont matter ?
+			float yTextureOffsetFloor = fabsf(floorY - (int) floorY);
+
+			float xTextureOffsetCeil = fabsf(ceilX - (int) ceilX); // fabsf'd once but dont matter ?
+			float yTextureOffsetCeil = fabsf(ceilY - (int) ceilY);
 
 			int floor_texture_id = floor_at((int) floorX, (int) floorY);
 			if (floor_texture_id < 0)
 				floor_texture_id = 0; // continue is buggy for some reason i dont know
-			int ceiling_texture_id = ceiling_at((int) floorX, (int) floorY);
+			int ceiling_texture_id = ceiling_at((int) ceilX, (int) ceilY);
 			if (ceiling_texture_id < 0)
 				ceiling_texture_id = 0; // continue is buggy for some reason i dont know
 			struct floor_texture_data floor_thing = floor_data[floor_texture_id];
 			struct floor_texture_data ceiling_thing = floor_data[ceiling_texture_id];
 
-			int floor_textureXOff = (int) (xTextureOffset * floor_thing.w);
-			int floor_textureYOff = (int) (yTextureOffset * floor_thing.h);
-			int ceiling_textureXOff = (int) (xTextureOffset * ceiling_thing.w);
-			int ceiling_textureYOff = (int) (yTextureOffset * ceiling_thing.h);
-
-			float dist = (floorX - cam.pos.x) * (floorX - cam.pos.x) + (floorY - cam.pos.y) * (floorY - cam.pos.y);
-			int darkness = darkness_threshold > 0 ? (dist * 255 / darkness_threshold) : 0;
-			Uint8 dark = 255 - min(darkness, 255); 
+			int floor_textureXOff = (int) (xTextureOffsetFloor * floor_thing.w);
+			int floor_textureYOff = (int) (yTextureOffsetFloor * floor_thing.h);
+			int ceiling_textureXOff = (int) (xTextureOffsetCeil * ceiling_thing.w);
+			int ceiling_textureYOff = (int) (yTextureOffsetCeil * ceiling_thing.h);
 
 			Uint32 floor_pixel = floor_thing.pixels[floor_textureYOff * floor_thing.w + floor_textureXOff];
 			Uint32 ceiling_pixel = ceiling_thing.pixels[ceiling_textureYOff * ceiling_thing.w + ceiling_textureXOff];
 
-			Uint8 r, g, b;
-			r = (floor_pixel & 0xFF000000) >> (8*3);
-			g = (floor_pixel & 0x00FF0000) >> (8*2);
-			b = (floor_pixel & 0x0000FF00) >> (8*1);
-
-			r = min((Uint8) (r * (dark/255.0)), 255);
-			g = min((Uint8) (g * (dark/255.0)), 255);
-			b = min((Uint8) (b * (dark/255.0)), 255); 
-
-			floor_pixel = (r << (8*3)) + (g << (8*2)) + (b << (8*1)) + 0x000000FF;
-
-			r = (ceiling_pixel & 0xFF000000) >> (8*3);
-			g = (ceiling_pixel & 0x00FF0000) >> (8*2);
-			b = (ceiling_pixel & 0x0000FF00) >> (8*1);
-
-			r = min((Uint8) (r * (dark/255.0)), 255);
-			g = min((Uint8) (g * (dark/255.0)), 255);
-			b = min((Uint8) (b * (dark/255.0)), 255); 
-
-			ceiling_pixel = (r << (8*3)) + (g << (8*2)) + (b << (8*1)) + 0x000000FF;
+			// float dist = (floorX - cam.pos.x) * (floorX - cam.pos.x) + (floorY - cam.pos.y) * (floorY - cam.pos.y);
+			// int darkness = darkness_threshold > 0 ? (dist * 255 / darkness_threshold) : 0;
+			// Uint8 dark = 255 - min(darkness, 255); 
+			//
+			// Uint8 r, g, b;
+			// r = (floor_pixel & 0xFF000000) >> (8*3);
+			// g = (floor_pixel & 0x00FF0000) >> (8*2);
+			// b = (floor_pixel & 0x0000FF00) >> (8*1);
+			//
+			// r = min((Uint8) (r * (dark/255.0)), 255);
+			// g = min((Uint8) (g * (dark/255.0)), 255);
+			// b = min((Uint8) (b * (dark/255.0)), 255); 
+			//
+			// floor_pixel = (r << (8*3)) + (g << (8*2)) + (b << (8*1)) + 0x000000FF;
+			//
+			// r = (ceiling_pixel & 0xFF000000) >> (8*3);
+			// g = (ceiling_pixel & 0x00FF0000) >> (8*2);
+			// b = (ceiling_pixel & 0x0000FF00) >> (8*1);
+			//
+			// r = min((Uint8) (r * (dark/255.0)), 255);
+			// g = min((Uint8) (g * (dark/255.0)), 255);
+			// b = min((Uint8) (b * (dark/255.0)), 255); 
+			//
+			// ceiling_pixel = (r << (8*3)) + (g << (8*2)) + (b << (8*1)) + 0x000000FF;
 
 			pixels[y * WINDOW_WIDTH + x] = ceiling_pixel;
 			pixels[(WINDOW_HEIGHT - y - 1) * WINDOW_WIDTH + x] = floor_pixel;
 			floorX += floorStepX / 1;
 			floorY += floorStepY / 1.5;
+
+			ceilX += ceilStepX / 1;
+			ceilY += ceilStepY / 1.5;
 		}
 	}
 
@@ -280,7 +295,7 @@ void render(raycast_camera cam, entity_array* objects) {
 
 			SDL_SetTextureColorMod(texture, dark, dark, dark);
 
-			float z = 0;
+			float z = cam.z;
 
 			float udv = dv - WINDOW_HEIGHT * sinf(z);
 			float bdv = dv + WINDOW_HEIGHT * sinf(z);

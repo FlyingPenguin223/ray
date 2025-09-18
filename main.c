@@ -34,6 +34,7 @@ int main() {
     raycast_camera cam;
 
     cam.pos = (vec2) {1.5, 1.5};
+	cam.z = 0;
     cam.dir = 0; 
     cam.fov = deg2rad(100);
 
