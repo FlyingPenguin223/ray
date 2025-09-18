@@ -317,8 +317,19 @@ void render(raycast_camera cam, entity_array* objects) {
 			int darkness = darkness_threshold > 0 ? (cur.dist * cur.dist * 255 / darkness_threshold) : 0;
 			Uint8 dark = 255 - min(darkness, 255);
 
+			float z = cam.z;
+
+			float udv = dv - WINDOW_HEIGHT * sinf(z);
+			float bdv = dv + WINDOW_HEIGHT * sinf(z);
+
+			float udist = (udv / 2.0) / correctedDist;
+			float bdist = (bdv / 2.0) / correctedDist;
+
+			float screen_y = WINDOW_HEIGHT/2.0 - udist;
+			float screen_h = udist + bdist;
+
 			SDL_SetTextureColorMod(get_entity_texture(cur.id), dark, dark, dark);
-			draw_scaled_sprite(get_entity_texture(cur.id), dx * dv / correctedDist + WINDOW_WIDTH/2.0, WINDOW_HEIGHT/2.0, dv / correctedDist);
+			draw_scaled_sprite(get_entity_texture(cur.id), dx * dv / correctedDist + WINDOW_WIDTH/2.0, screen_y + screen_h / 2, dv / correctedDist);
 		}
 	}
 }
