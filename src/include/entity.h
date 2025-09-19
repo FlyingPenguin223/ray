@@ -5,6 +5,7 @@
 typedef struct entity {
     int type;
     vec2 pos;
+	float z;
     vec2 spd;
     void (*update)(struct entity* this);
 } entity;

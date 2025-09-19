@@ -270,7 +270,7 @@ void render(raycast_camera cam, entity_array* objects) {
 		if (fixmod(my_angle - lower, 2*M_PI) <= fixmod(upper - lower, 2*M_PI)) {
 			vec2 offset = {thing->pos.x - cam.pos.x, thing->pos.y - cam.pos.y};
 			float dist = sqrtf(offset.x * offset.x + offset.y * offset.y);
-			insertRenderElement(-1, dist, my_angle - cam.dir, 0, thing->type);
+			insertRenderElement(-1, dist, my_angle - cam.dir, thing->z, thing->type);
 		}
 	}
 
@@ -317,7 +317,7 @@ void render(raycast_camera cam, entity_array* objects) {
 			int darkness = darkness_threshold > 0 ? (cur.dist * cur.dist * 255 / darkness_threshold) : 0;
 			Uint8 dark = 255 - min(darkness, 255);
 
-			float z = cam.z;
+			float z = cam.z - cur.texture_offset; // entity z
 
 			float udv = dv - WINDOW_HEIGHT * sinf(z);
 			float bdv = dv + WINDOW_HEIGHT * sinf(z);
