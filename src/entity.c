@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "../raycast.h"
+#include "entity.h"
 
 entity_array* init_entity_array() {
     entity_array* ret = malloc(sizeof(entity_array));

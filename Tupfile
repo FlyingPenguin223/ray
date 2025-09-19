@@ -2,5 +2,5 @@ CFLAGS += -O3
 CFLAGS += -g3
 
 : maps/testmap.tmj |> tiled2c %f %B | clang-format > %o |> src/tiled2cmap.c
-: foreach src/*.c main.c |> gcc $(CFLAGS) -c %f -o %o |> build/%B.o
-: build/*.o |> gcc $(CFLAGS) %f -o %o -lm -lSDL2 |> main
+: foreach src/*.c |> gcc $(CFLAGS) -c %f -o %o |> build/%B.o
+: build/*.o |> gcc $(CFLAGS) %f -o %o -lm -lSDL2 |> build/main.out

@@ -1,6 +1,10 @@
+#include <SDL2/SDL.h>
+
 #include "raycast.h"
-#include "src/include/entities.h"
-#include "src/include/render.h"
+#include "camera.h"
+#include "render.h"
+#include "input.h"
+#include "entities.h"
 
 void sdl_exit();
 int sdl_init();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../raycast.h"
+#include "vec.h"
 
 typedef struct entity {
     int type;

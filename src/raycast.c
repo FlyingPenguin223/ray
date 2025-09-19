@@ -1,6 +1,9 @@
+#include <SDL2/SDL.h>
 #include <math.h>
 
-#include "../raycast.h"
+#include "raycast.h"
+#include "vec.h"
+
 
 float vec2rad(vec2 input) {
     return atan2(input.y, input.x);

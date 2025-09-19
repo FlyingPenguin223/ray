@@ -1,6 +1,10 @@
-#include "../raycast.h"
-#include <SDL2/SDL_surface.h>
+#include <SDL2/SDL.h>
 #include <math.h>
+
+#include "raycast.h"
+#include "camera.h"
+#include "entity.h"
+#include "map.h"
 
 extern SDL_Window* g_window;
 extern SDL_Renderer* g_renderer;

@@ -1,4 +1,4 @@
-#include "../raycast.h"
+#include <SDL2/SDL.h>
 
 static short keys_down[SDL_NUM_SCANCODES];
 

@@ -1,6 +1,8 @@
-#include "../raycast.h"
-#include "include/input.h"
-#include <SDL2/SDL_scancode.h>
+#include <SDL2/SDL.h>
+
+#include "input.h"
+#include "camera.h"
+#include "raycast.h"
 
 void cam_debug_movement(raycast_camera* cam) {
     float spd = 0.1;
