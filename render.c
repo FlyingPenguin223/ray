@@ -283,8 +283,8 @@ void render(raycast_camera cam, entity_array* objects) {
 
 		if (cur.type >= 0) { // wall
 			float scaleconst = 1;
-			float rx = cur.dist * cos(cur.angle) + cam.pos.x;
-			float ry = cur.dist * sin(cur.angle) + cam.pos.y;
+			// float rx = cur.dist * cos(cur.angle) + cam.pos.x;
+			// float ry = cur.dist * sin(cur.angle) + cam.pos.y;
 			float corrected_dist = cur.dist * cos(cur.angle - cam.dir);
 
 			SDL_Texture* texture = get_wall_texture(cur.id);
@@ -304,8 +304,8 @@ void render(raycast_camera cam, entity_array* objects) {
 			float udv = dv - WINDOW_HEIGHT * sinf(z);
 			float bdv = dv + WINDOW_HEIGHT * sinf(z);
 
-			float udist = (udv / 2.0) / corrected_dist;
-			float bdist = (bdv / 2.0) / corrected_dist;
+			float udist = (udv / 2.0) / corrected_dist * scaleconst;
+			float bdist = (bdv / 2.0) / corrected_dist * scaleconst;
 
 			float screen_y = WINDOW_HEIGHT/2.0 - udist;
 			float screen_h = udist + bdist;
