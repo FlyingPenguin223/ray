@@ -4,7 +4,6 @@
 #include "camera.h"
 #include "render.h"
 #include "input.h"
-#include "entities.h"
 
 void sdl_exit();
 int sdl_init();

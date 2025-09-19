@@ -8,3 +8,5 @@ typedef struct raycast_camera {
     float dir;
     float fov;
 } raycast_camera;
+
+void cam_debug_movement(raycast_camera* cam);
