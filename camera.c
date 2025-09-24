@@ -6,31 +6,31 @@
 
 void cam_debug_movement(raycast_camera* cam) {
 	float spd = 0.1;
-	if (is_key_down(SDL_SCANCODE_W)) {
+	if (key_down(SDL_SCANCODE_W)) {
 		cam->pos.x += cos(cam->dir) * spd;
 		cam->pos.y += sin(cam->dir) * spd;
-	} else if (is_key_down(SDL_SCANCODE_S)) {
+	} else if (key_down(SDL_SCANCODE_S)) {
 		cam->pos.x -= cos(cam->dir) * spd;
 		cam->pos.y -= sin(cam->dir) * spd;
 	}
 
-	if (is_key_down(SDL_SCANCODE_D)) {
+	if (key_down(SDL_SCANCODE_D)) {
 		cam->pos.x += cos(cam->dir + M_PI/2) * spd;
 		cam->pos.y += sin(cam->dir + M_PI/2) * spd;
-	} else if (is_key_down(SDL_SCANCODE_A)) {
+	} else if (key_down(SDL_SCANCODE_A)) {
 		cam->pos.x += cos(cam->dir - M_PI/2) * spd;
 		cam->pos.y += sin(cam->dir - M_PI/2) * spd;
 	}
 
-	if (is_key_down(SDL_SCANCODE_LEFT)) {	
+	if (key_down(SDL_SCANCODE_LEFT)) {	
 		cam->dir -= 0.03;
-	} else if (is_key_down(SDL_SCANCODE_RIGHT)) {
+	} else if (key_down(SDL_SCANCODE_RIGHT)) {
 		cam->dir += 0.03;
 	}
 
-	if (is_key_down(SDL_SCANCODE_UP)) {
+	if (key_down(SDL_SCANCODE_UP)) {
 		cam->z += 0.1;
-	} else if (is_key_down(SDL_SCANCODE_DOWN)) {
+	} else if (key_down(SDL_SCANCODE_DOWN)) {
 		cam->z -= 0.1;
 	}
 

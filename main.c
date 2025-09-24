@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mouse.h>
 #include <SDL2/SDL_video.h>
 
 #include "raycast.h"
@@ -47,7 +48,7 @@ int main() {
 	int loop = 1;
 
 	entity* player = init_entity(objects, 0, 2.5, 2.5);
-	int cam_movement = 1;
+	int cam_movement = 0;
 
 	while (loop) {
 		Uint64 start = SDL_GetTicks64();
@@ -56,16 +57,19 @@ int main() {
 			parse_event(e);
 		}
 
+		update_entities(objects);
+
 		if (cam_movement) {
 			cam_debug_movement(&cam);
 			// fprintf(stderr, "(%d, %d) ", (int) cam.pos.x, (int) cam.pos.y); cam position is fine
 		} else {
 			cam.pos = player->pos;
+			cam.dir = player->dir;
+			cam.z = player->z;
 		}
 
 		SDL_RenderClear(g_renderer);
 
-		update_entities(objects);
 		render(cam, objects);
 
 		SDL_RenderPresent(g_renderer);

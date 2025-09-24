@@ -16,6 +16,7 @@ entity* init_entity(entity_array* array, int type, float x, float y) {
 	entity* new_entity = malloc(sizeof(entity));
 
 	new_entity->pos = (vec2) {x, y};
+	new_entity->dir = 0;
 	new_entity->z = 0;
 	new_entity->spd = (vec2) {0, 0};
 	new_entity->type = type;
