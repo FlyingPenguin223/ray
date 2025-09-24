@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "entity.h"
+#include "entities.h"
 
 entity_array* init_entity_array() {
 	entity_array* ret = malloc(sizeof(entity_array));
@@ -18,8 +19,7 @@ entity* init_entity(entity_array* array, int type, float x, float y) {
 	new_entity->z = 0;
 	new_entity->spd = (vec2) {0, 0};
 	new_entity->type = type;
-	new_entity->update = NULL;
-
+	new_entity->update = updates[type];
 
 	if (array->length >= array->capacity) {
 		array->capacity *= 2;
@@ -59,4 +59,12 @@ void free_entity_array(entity_array* array) {
 	}
 	free(array->array);
 	free(array);
+}
+
+void update_entities(entity_array* array) {
+	for (int i = 0; i < array->length; i++) {
+		entity* thing = get_entity(array, i);
+		if (thing->update)
+			thing->update(thing);
+	}
 }

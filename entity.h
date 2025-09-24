@@ -25,3 +25,5 @@ void kill_entity(entity_array* array, int id);
 entity* get_entity(entity_array* array, int id);
 
 void free_entity_array(entity_array* array);
+
+void update_entities(entity_array* array);

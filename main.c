@@ -65,6 +65,7 @@ int main() {
 
 		SDL_RenderClear(g_renderer);
 
+		update_entities(objects);
 		render(cam, objects);
 
 		SDL_RenderPresent(g_renderer);
